@@ -51,14 +51,18 @@
         </tr>
       </tbody>
     </table>
-    <!-- 分頁元件 -->
+    <!-- 元件 -->
     <PaginationComponent :pages="page" :getProducts="getProductsList"></PaginationComponent>
+    <DelComponent ref="DelComponent" @closeModal="closeModal" :tempProduct="tempProduct" :getProductsList="getProductsList"></DelComponent>
   </div>
 </template>
 
 <script>
 import PaginationComponent from '../../components/PaginationComponent.vue'
+import DelComponent from '../../components/DelComponent.vue'
+import { Modal } from 'bootstrap'
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env
+// let delProductModal = {}
 export default {
   data () {
     return {
@@ -67,12 +71,14 @@ export default {
         imagesUrl: []
       },
       isNew: false, // 確認是新增或編輯的判斷
-      page: {}
+      page: {},
+      delProductModal: {},
+      productModal: {}
     }
   },
   components: {
-    PaginationComponent
-    // delComponent
+    PaginationComponent,
+    DelComponent
   },
   methods: {
     checkLogin () {
@@ -92,26 +98,22 @@ export default {
     },
     // 選擇打開 modal 視窗的種類
     // 編輯時，將資料帶進 tempProduct，productModal 的 input 欄位與資料雙向綁定，即可看到原先資料
-    // openModal (isNew, item) {
-    //   if (isNew === 'edit') {
-    //     this.tempProduct = { ...item }
-    //     this.isNew = false
-    //     productModal.show()
-    //   }
-    //   // 為了顯示 title，需先將資料帶入 tempProduct
-    //   else if (isNew === 'delete') {
-    //     this.tempProduct = { ...item }
-    //     delProductModal.show()
-    //   }
-    //   // 新增時，則清空 tempProduct
-    //   else if (isNew === 'new') {
-    //     this.tempProduct = {
-    //       imagesUrl: []
-    //     }
-    //     this.isNew = true
-    //     productModal.show()
-    //   }
-    // },
+    openModal (isNew, item) {
+      if (isNew === 'edit') {
+        this.tempProduct = { ...item }
+        this.isNew = false
+        this.productModal.show()
+      } else if (isNew === 'delete') { // 為了顯示 title，需先將資料帶入 tempProduct
+        this.tempProduct = { ...item }
+        this.delProductModal.show()
+      } else if (isNew === 'new') { // 新增時，則清空 tempProduct
+        this.tempProduct = {
+          imagesUrl: []
+        }
+        this.isNew = true
+        this.productModal.show()
+      }
+    },
     getProductsList (page = 1) { // 預設第一頁
       const loader = this.$loading.show()
       this.$http({
@@ -127,18 +129,18 @@ export default {
     },
     removeImage (key) {
       this.tempProduct.imagesUrl.splice(key, 1)
+    },
+    closeModal (state) {
+      if (state === 'del') {
+        this.delProductModal.hide()
+      }
     }
-    // closeModal (state) {
-    //   if (state === 'del') {
-    //     delProductModal.hide()
-    //   }
-    // }
   },
   mounted () {
     // 選取 產品 Modal
     // productModal = new bootstrap.Modal(document.querySelector('#productModal'))
-    // delProductModal = new bootstrap.Modal(document.getElementById('delProductModal'))
-    // this.delProductModal = new bootstrap.Modal(this.$refs.delProductModal);
+    this.delProductModal = new Modal(this.$refs.DelComponent.$refs.delProductModal)
+    // console.log(this.$refs.DelComponent.$refs.delProductModal)
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
     this.$http.defaults.headers.common.Authorization = token
     this.checkLogin()
