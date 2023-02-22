@@ -38,12 +38,22 @@ const routes = [
       {
         path: 'products',
         component: () => import('../views/admin/AdminProducts.vue')
+        // children: [
+        //   {
+        //     path: 'PaginationComponent',
+        //     component: () => import('../components/PaginationComponent.vue')
+        //   }
+        // ]
       },
       {
         path: 'orders',
         component: () => import('../views/admin/AdminOrders.vue')
       }
     ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('../views/NotFound.vue')
   }
 ]
 

@@ -14,14 +14,14 @@ export default {
   },
   methods: {
     getProduct () {
-      // console.log(this.$route)
+      const loader = this.$loading.show()
       const { id } = this.$route.params
       this.$http({
         method: 'get',
         url: `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/product/${id}`
       }).then((res) => {
-        // console.log(res)
         this.product = res.data.product
+        loader.hide()
       })
     }
   },
