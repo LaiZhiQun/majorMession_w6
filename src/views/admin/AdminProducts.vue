@@ -53,13 +53,17 @@
     </table>
     <!-- 元件 -->
     <PaginationComponent :pages="page" :getProducts="getProductsList"></PaginationComponent>
-    <DelComponent ref="DelComponent" @closeModal="closeModal" :tempProduct="tempProduct" :getProductsList="getProductsList"></DelComponent>
+    <DelComponent ref="DelComponent" @closeModal="closeModal" :tempProduct="tempProduct"
+      :getProductsList="getProductsList"></DelComponent>
+    <ProductModalComponent ref="productModal" @updateProduct="updateProduct" :product="tempProduct" @removeImage="removeImage">
+    </ProductModalComponent>
   </div>
 </template>
 
 <script>
 import PaginationComponent from '../../components/PaginationComponent.vue'
 import DelComponent from '../../components/DelComponent.vue'
+import ProductModalComponent from '../../components/ProductModalComponent.vue'
 import { Modal } from 'bootstrap'
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env
 // let delProductModal = {}
@@ -78,9 +82,48 @@ export default {
   },
   components: {
     PaginationComponent,
-    DelComponent
+    DelComponent,
+    ProductModalComponent
   },
   methods: {
+    updateProduct () {
+      if (!this.isNew) {
+        // 編輯資料 put
+        const loader = this.$loading.show()
+        this.$http({
+          method: 'put',
+          url: `${VITE_APP_URL}api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`,
+          data: {
+            data: this.tempProduct
+          }
+        }).then(res => {
+          loader.hide()
+          alert(res.data.message)
+          this.$refs.productModal.hideModal()
+          this.getProductsList()
+        })
+          .catch(err => {
+            alert(err.data.message)
+          })
+      } else {
+        // 新增資料 post
+        const loader = this.$loading.show()
+        this.$http({
+          method: 'post',
+          url: `${VITE_APP_URL}api/${VITE_APP_PATH}/admin/product`,
+          data: {
+            data: this.tempProduct
+          }
+        }).then(res => {
+          loader.hide()
+          alert(res.data.message)
+          this.$refs.productModal.hideModal()
+          this.getProductsList()
+        }).catch(err => {
+          alert(err.data.message)
+        })
+      }
+    },
     checkLogin () {
       const loader = this.$loading.show()
       this.$http({
@@ -102,7 +145,7 @@ export default {
       if (isNew === 'edit') {
         this.tempProduct = { ...item }
         this.isNew = false
-        this.productModal.show()
+        this.$refs.productModal.openModal()
       } else if (isNew === 'delete') { // 為了顯示 title，需先將資料帶入 tempProduct
         this.tempProduct = { ...item }
         this.delProductModal.show()
@@ -111,7 +154,7 @@ export default {
           imagesUrl: []
         }
         this.isNew = true
-        this.productModal.show()
+        this.$refs.productModal.openModal()
       }
     },
     getProductsList (page = 1) { // 預設第一頁
@@ -138,9 +181,8 @@ export default {
   },
   mounted () {
     // 選取 產品 Modal
-    // productModal = new bootstrap.Modal(document.querySelector('#productModal'))
+    // this.productModal = new Modal(this.$refs.ProductModal.$refs.productModal)
     this.delProductModal = new Modal(this.$refs.DelComponent.$refs.delProductModal)
-    // console.log(this.$refs.DelComponent.$refs.delProductModal)
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
     this.$http.defaults.headers.common.Authorization = token
     this.checkLogin()
