@@ -1,5 +1,5 @@
 <template>
-  這是單一產品頁面
+  這是單一店家頁面
   <h2>{{ product.title }}</h2>
   <img :src="product.imageUrl" width="500" alt="">
 </template>

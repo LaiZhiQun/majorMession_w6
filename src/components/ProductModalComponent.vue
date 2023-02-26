@@ -6,8 +6,8 @@
         <div class="modal-header bg-dark text-white">
           <h5 id="productModalLabel" class="modal-title">
             <!-- 判斷是否為新增產品 -->
-            <span v-if="isNew">新增產品</span>
-            <span v-else>編輯產品</span>
+            <span v-if="isNew">新增店家</span>
+            <span v-else>編輯店家</span>
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -45,12 +45,12 @@
             <!-- 將所有欄位與 tempProduct 雙向綁定 -->
             <div class="col-sm-8">
               <div class="mb-3">
-                <label for="title" class="form-label">標題</label>
+                <label for="title" class="form-label">店家</label>
                 <input id="title" v-model="tempProduct.title" type="text" class="form-control" placeholder="請輸入標題">
               </div>
               <div class="row">
                 <div class="mb-3 col-md-6">
-                  <label for="category" class="form-label">分類</label>
+                  <label for="category" class="form-label">城市</label>
                   <input id="category" v-model="tempProduct.category" type="text" class="form-control"
                     placeholder="請輸入分類">
                 </div>
@@ -75,13 +75,13 @@
               <hr>
 
               <div class="mb-3">
-                <label for="description" class="form-label">產品描述</label>
+                <label for="description" class="form-label">蝦池種類</label>
                 <textarea id="description" v-model="tempProduct.description" type="text" class="form-control"
                   placeholder="請輸入產品描述">
                           </textarea>
               </div>
               <div class="mb-3">
-                <label for="content" class="form-label">說明內容</label>
+                <label for="content" class="form-label">地址</label>
                 <textarea id="description" v-model="tempProduct.content" type="text" class="form-control"
                   placeholder="請輸入說明內容">
                           </textarea>

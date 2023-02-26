@@ -1,19 +1,19 @@
 <template>
-  後台產品列表
+  後台店家列表
   <hr>
   <div class="container">
     <div class="text-end mt-4">
       <button @click="openModal('new')" class="btn btn-primary">
-        建立新的產品
+        建立新的店家
       </button>
     </div>
     <table class="table mt-4">
       <thead>
         <tr>
           <th width="120">
-            分類
+            城市
           </th>
-          <th>產品名稱</th>
+          <th>店名</th>
           <th width="120">
             原價
           </th>
@@ -36,7 +36,7 @@
           <td class="text-end">{{ item.price }}</td>
           <td>
             <span v-if="item.is_enabled" class="text-success">啟用</span>
-            <span v-else>未啟用</span>
+            <span v-else>不啟用</span>
           </td>
           <td>
             <div class="btn-group">
@@ -52,7 +52,7 @@
       </tbody>
     </table>
     <!-- 元件 -->
-    <PaginationComponent :pages="page" :getProducts="getProductsList"></PaginationComponent>
+    <PaginationComponent :pages="page" @emitPages="getProductsList"></PaginationComponent>
     <DelComponent ref="DelComponent" @closeModal="closeModal" :tempProduct="tempProduct"
       :getProductsList="getProductsList"></DelComponent>
     <ProductModalComponent ref="productModal" @updateProduct="updateProduct" :product="tempProduct" @removeImage="removeImage">
@@ -116,7 +116,8 @@ export default {
           }
         }).then(res => {
           loader.hide()
-          alert(res.data.message)
+          // alert(res.data.message)
+          alert('已新增店家')
           this.$refs.productModal.hideModal()
           this.getProductsList()
         }).catch(err => {
