@@ -1,0 +1,1 @@
+import{_ as e,o,c as t,a as c,d as a}from"./index-23b8ee70.js";const n={},s=a("p",null,"找不到頁面",-1);function r(_,d){return o(),t("h1",null,[c("404 "),s])}const f=e(n,[["render",r]]);export{f as default};
